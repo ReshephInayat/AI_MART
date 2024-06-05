@@ -23,7 +23,7 @@ async def consume_messages(topic, bootstrap_servers):
     consumer = AIOKafkaConsumer(
         topic,
         bootstrap_servers=bootstrap_servers,
-        group_id="my-prodocct-consumer-group",
+        group_id="my-product-consumer-group",
         # auto_offset_reset="earliest",
     )
 
@@ -40,7 +40,7 @@ async def consume_messages(topic, bootstrap_servers):
             print(f"Product Data {product_data}")
 
             with next(get_session()) as session:
-                print("SAVING DATA TO DATABSE")
+                print("SAVING DATA TO DATABASE")
                 db_insert_product = add_new_product(
                     product_data=Product(**product_data), session=session)
                 print("DB_INSERT_PRODUCT", db_insert_product)
