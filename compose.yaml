@@ -12,7 +12,7 @@ services:
       - broker
       - postgres_product_db
     ports:
-      - "8006:8000" # Expose container port 8000 to host port 8000
+      - "8000:8000" # Expose container port 8000 to host port 8000
 
   order-service:
     image: order-mart-api
@@ -25,8 +25,20 @@ services:
       - broker
       - postgres_order_db
     ports:
-      - "8009:8000" # Expose container port 8000 to host port 8000
-  
+      - "8005:8005" # Expose container port 8000 to host port 8000
+
+  inventory-service:
+    image: inventory-mart-api
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./inventory-service:/code # Sync local development directory with the container
+    depends_on:
+      - broker
+      - postgres_inventory_db
+    ports:
+      - "8011:8005" # Expose container port 8000 to host port 8000
 
   postgres_product_db:
     image: postgres:latest # Use the official PostgreSQL image
@@ -37,7 +49,7 @@ services:
       - POSTGRES_PASSWORD=my_password
       - POSTGRES_DB=mydatabase
     ports:
-      - "5437:5432"
+      - "5481:5432"
     volumes:
       - postgres_product_db:/var/lib/postgresql/data
 
@@ -50,9 +62,22 @@ services:
       - POSTGRES_PASSWORD=my_password
       - POSTGRES_DB=mydatabase
     ports:
-      - "5439:5432"
+      - "5482:5432"
     volumes:
       - postgres_order_db:/var/lib/postgresql/data
+
+  postgres_inventory_db:
+    image: postgres:latest # Use the official PostgreSQL image
+    restart: always
+    container_name: PostgresInventoryCont
+    environment:
+      - POSTGRES_USER=ziakhan
+      - POSTGRES_PASSWORD=my_password
+      - POSTGRES_DB=mydatabase
+    ports:
+      - "5441:5432"
+    volumes:
+      - postgres_inventory_db:/var/lib/postgresql/data
 
   broker:
     image: apache/kafka:3.7.0
@@ -92,6 +117,8 @@ volumes:
   postgres_product_db:
     driver: local
   postgres_order_db:
+    driver: local
+  postgres_inventory_db:  
     driver: local
 
 networks:
