@@ -12,7 +12,7 @@ services:
       - broker
       - postgres_product_db
     ports:
-      - "8000:8000" # Expose container port 8000 to host port 8000
+      - "8006:8000" # Expose container port 8000 to host port 8000
 
   order-service:
     image: order-mart-api
@@ -25,7 +25,7 @@ services:
       - broker
       - postgres_order_db
     ports:
-      - "8005:8005" # Expose container port 8000 to host port 8000
+      - "8009:8000" # Expose container port 8000 to host port 8000
   
 
   postgres_product_db:
@@ -37,7 +37,7 @@ services:
       - POSTGRES_PASSWORD=my_password
       - POSTGRES_DB=mydatabase
     ports:
-      - "5481:5432"
+      - "5437:5432"
     volumes:
       - postgres_product_db:/var/lib/postgresql/data
 
@@ -50,7 +50,7 @@ services:
       - POSTGRES_PASSWORD=my_password
       - POSTGRES_DB=mydatabase
     ports:
-      - "5482:5432"
+      - "5439:5432"
     volumes:
       - postgres_order_db:/var/lib/postgresql/data
 
