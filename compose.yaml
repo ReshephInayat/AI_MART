@@ -4,7 +4,7 @@ services:
   product-service:
     image: product-mart-api
     build:
-      context: ./product-service
+      context: ./order-service
       dockerfile: Dockerfile.dev
     volumes:
       - ./product-service:/code # Sync local development directory with the container
@@ -13,6 +13,19 @@ services:
       - postgres_product_db
     ports:
       - "8000:8000" # Expose container port 8000 to host port 8000
+
+  order-service:
+    image: order-mart-api
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./order-service:/code # Sync local development directory with the container
+    depends_on:
+      - broker
+      - postgres_order_db
+    ports:
+      - "8005:8005" # Expose container port 8000 to host port 8000
   
 
   postgres_product_db:
@@ -27,6 +40,19 @@ services:
       - "5481:5432"
     volumes:
       - postgres_product_db:/var/lib/postgresql/data
+
+  postgres_order_db:
+    image: postgres:latest # Use the official PostgreSQL image
+    restart: always
+    container_name: PostgresOrderCont
+    environment:
+      - POSTGRES_USER=ziakhan
+      - POSTGRES_PASSWORD=my_password
+      - POSTGRES_DB=mydatabase
+    ports:
+      - "5482:5432"
+    volumes:
+      - postgres_order_db:/var/lib/postgresql/data
 
   broker:
     image: apache/kafka:3.7.0
@@ -64,6 +90,8 @@ services:
 
 volumes:
   postgres_product_db:
+    driver: local
+  postgres_order_db:
     driver: local
 
 networks:
